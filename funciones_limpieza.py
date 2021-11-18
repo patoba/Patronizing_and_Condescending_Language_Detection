@@ -45,3 +45,17 @@ def limpiar_palabras(words,remove_all_stopword=True,relevant_words=None,POS_tags
             raise Warning("""'Lematizar','Lemmatization','Stemming' and 'Enraizar' are the only
             possible options for transf paramater.""")
     return words
+
+def obtener_tokens(s):
+    return s.str.replace(" n't", "n't") \
+               .str.replace(" 're", "'re") \
+               .str.replace(" 's", "'s") \
+               .str.replace("\([ A-Za-z%]+\)", "") \
+               .str.replace("--", "") \
+               .str.replace("<h>", "") \
+               .str.replace(" \? s ", "'s") \
+               .str.replace(" (@|#)\w+ ", " ") \
+               .str.replace("Pok ? mon", "Pokemon") \
+               .str.replace('''"|,|!|:|\d|\.|\'''', '') \
+               .str.replace("\\", " ") \
+               .str.replace("\s\s+", " ")
