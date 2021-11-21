@@ -1,6 +1,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from nltk.corpus import stopwords
 from nltk.tag import pos_tag
+from nltk.stem import PorterStemmer, WordNetLemmatizer 
 
 class RemoveWordsV1(BaseEstimator, TransformerMixin):
     def __init__(self, unwanted_words = stopwords.words("english")):
@@ -44,3 +45,22 @@ class GetTags(BaseEstimator, TransformerMixin):
         else:
             raise Warning("tag list provided does not match, look for the correct Peen Tree Bank POS tags")
         return X_
+class Get_base(BaseEstimator, TransformerMixin):
+    def __init__(self, transf= None):
+        self.transf = transf
+    
+    def transform(self, X, y = None):
+         words = X.copy
+         if self.transf=='Lematizar' or self.transf=='Lemmatization':
+            lemmatizer = WordNetLemmatizer()
+            words = words.apply(lambda line: [lemmatizer.lemmatize(w) for w in line])
+         elif self.transf=='Stemming' or self.transf=='Enraizar':
+            ps = PorterStemmer()
+            words = words.apply(lambda line: [ps.stem(w) for w in line])
+         else:
+            raise Warning("""'Lematizar','Lemmatization','Stemming' and 'Enraizar' are the only
+            possible options for transf paramater.""")
+         return words
+    
+    def fit(self, X, y):
+        return self
