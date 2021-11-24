@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 from nltk.tag import pos_tag
 from nltk.stem import PorterStemmer, WordNetLemmatizer 
 
-class RemoveWordsV1(BaseEstimator, TransformerMixin):
+class RemoveWords(BaseEstimator, TransformerMixin):
     def __init__(self, unwanted_words = stopwords.words("english")):
         self.unwanted_words = unwanted_words
         
