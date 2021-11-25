@@ -55,7 +55,6 @@ def obtener_tokens(s):
                .str.replace("<h>", "") \
                .str.replace(" \? s ", "'s") \
                .str.replace(" (@|#)\w+ ", " ") \
-               .str.replace("Pok ? mon", "Pokemon") \
                .str.replace('''"|,|!|:|\d|\.|\'''', '') \
                .str.replace("\\", " ") \
                .str.replace("\s\s+", " ")
