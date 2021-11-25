@@ -45,7 +45,7 @@ class GetTags(BaseEstimator, TransformerMixin):
         else:
             raise Warning("tag list provided does not match, look for the correct Peen Tree Bank POS tags")
         return X_
-class Get_base(BaseEstimator, TransformerMixin):
+class GetBase(BaseEstimator, TransformerMixin):
     def __init__(self, transf= None):
         self.transf = transf
     
