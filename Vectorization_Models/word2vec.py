@@ -1,6 +1,7 @@
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils.validation import check_is_fitted
 from gensim.models import KeyedVectors
+from nltk.data import find 
 import numpy as np
 import pickle
 
@@ -8,9 +9,11 @@ subset_file = "/datasets/en_embeddings.p"
 en_embeddings = KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', 
                                                   binary = True, limit = 100000)
 en_embeddings_subset = pickle.load(open(subset_file, "rb"))
+word2vec_sample = str(find('models/word2vec_sample/pruned.word2vec.txt'))
+en_embeddings_sample = KeyedVectors.load_word2vec_format(word2vec_sample, binary=False)
 
 class GetSentenceEmbedding(BaseEstimator, TransformerMixin):
-    def __init__(self, embedding_dic = en_embeddings, method=np.sum, 
+    def __init__(self, embedding_dic = en_embeddings_sample, method=np.sum, 
                  replace = False):
         """
         embedding_dic: Dictionary or gensim KeyedVectors with the word as key and its embedding vector as value.
