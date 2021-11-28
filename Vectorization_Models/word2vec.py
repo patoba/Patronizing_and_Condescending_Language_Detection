@@ -5,7 +5,7 @@ from nltk.data import find
 import numpy as np
 import pickle
 
-subset_file = "datasets\\en_embeddings.p"
+subset_file = "datasets\\en_embeddings_subset.p"
 en_embeddings_subset = pickle.load(open(subset_file, "rb"))
 #en_embeddings = KeyedVectors.load_word2vec_format('./GoogleNews-vectors-negative300.bin', 
 #                                              binary = True, limit = 100000)
