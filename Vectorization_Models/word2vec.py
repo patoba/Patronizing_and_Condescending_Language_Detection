@@ -32,6 +32,7 @@ class GetSentenceEmbedding(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         #check_is_fitted(self)
         X_ = X.copy()
+        print(len(X_[X_.apply(lambda l: len(l) == 0 )]))
         if self.replace:
             X_ = X_.apply(lambda line: 
                           [self.embedding_dic[word] 
@@ -40,8 +41,7 @@ class GetSentenceEmbedding(BaseEstimator, TransformerMixin):
                           for word in line])
         else:
             X_ = X_.apply(lambda line: [self.embedding_dic[word] for word in line if word in self.embedding_dic])
-        X_[X_.apply(lambda l: len(l) == 0)] = 0
-        X_[X_.apply(lambda l: l == 0)] = X_[X_.apply(lambda l: l == 0)].map({0:[np.zeros(300)]})
+        X_[X_.apply(lambda l: len(l) == 0 )] #agregar vectores con ceros
         X_ = X_.apply(lambda line: self.method(np.array(line), axis=0).tolist())
-        X_ = np.array(X_.to_list())
+        X_ = np.array(X_.tolist())
         return X_
