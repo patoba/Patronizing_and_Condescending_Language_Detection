@@ -1,6 +1,4 @@
 from sklearn.base import BaseEstimator, TransformerMixin
-from nltk.stem import PorterStemmer, WordNetLemmatizer 
-from sklearn.utils.validation import check_is_fitted
 from textblob import TextBlob
 import pandas as pd
 

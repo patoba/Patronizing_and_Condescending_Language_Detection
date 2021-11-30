@@ -7,10 +7,11 @@ all_tag_list = {'CC','CD','DT','EX','FW','IN','JJ','JJR','JJS','LS','MD',
                 'NN','NNS','NNP','NNPS','PDT','POS','PRP','PRP$','RB','RBR',
                 'RP','SYM','TO','UH','VB','VBD','VBG','VBN','VBP','VBZ',
                 'WDT','WP','WP$','WRB','RBS'}    
-common_tag_list = {'JJ','JJR','JJS','VB','VBD','VBG','VBN','VBP','VBZ'}
+verbs_adjectives = {'JJ','JJR','JJS','VB','VBD','VBG','VBN','VBP','VBZ'}
+verbs_adjectives_nouns = verbs_adjectives.union({"NN", "NNS", "NNP", "NNPS"})
 
 class GetTags(BaseEstimator, TransformerMixin):
-    def __init__(self, tag_list = common_tag_list):
+    def __init__(self, tag_list = verbs_adjectives):
         self.tag_list = tag_list
         if not tag_list.issubset(all_tag_list):
             raise Warning("tag list provided does not match, look for the correct Peen Tree Bank POS tags")
