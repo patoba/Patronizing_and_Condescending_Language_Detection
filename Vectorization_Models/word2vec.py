@@ -32,7 +32,8 @@ class GetSentenceEmbedding(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         #check_is_fitted(self)
         X_ = X.copy()
-        print(len(X_[X_.apply(lambda l: len(l) == 0 )]))
+        word_in_embedding = list(self.embedding_dic.keys())[0] 
+        embedding_dim = len(self.embedding_dic[word_in_embedding])
         if self.replace:
             X_ = X_.apply(lambda line: 
                           [self.embedding_dic[word] 
