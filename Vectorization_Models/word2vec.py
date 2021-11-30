@@ -41,7 +41,8 @@ class GetSentenceEmbedding(BaseEstimator, TransformerMixin):
                           for word in line])
         else:
             X_ = X_.apply(lambda line: [self.embedding_dic[word] for word in line if word in self.embedding_dic])
-        X_[X_.apply(lambda l: len(l) == 0 )] #agregar vectores con ceros
+        X_[X_.apply(lambda l: len(l) == 0)] = 0
+        X_[X_.apply(lambda l: l == 0)] = X_[X_.apply(lambda l: l == 0)].map({0:[np.zeros(embedding_dim)]}) 
         X_ = X_.apply(lambda line: self.method(np.array(line), axis=0).tolist())
         X_ = np.array(X_.tolist())
         return X_
