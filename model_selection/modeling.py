@@ -1,6 +1,6 @@
 import numpy as np
 
-from sklearn.pipeline import Pipeline
+from imblearn.pipeline import Pipeline
 
 from preprocessing import GetSentenceEmbedding, Doc2Vec, UnTokenize, \
                           AnalisisSentimiento
@@ -16,7 +16,7 @@ modelings_bag_words = [
 
 # SENTIMENT ANALISIS
 
-inicio = "column__" + inicio
+inicio = "" + inicio
 
 param_word2vec = {
     inicio + "word2vec__method": [np.mean, np.sum], 
@@ -28,10 +28,10 @@ param_doc2vec = {
 
 param_sentiment_analisis = {}
 
-word2vec = Pipeline([("untokenize", UnTokenize()), 
-                    ("word2vec", GetSentenceEmbedding())])
+doc2vec_pipe = Pipeline([("untokenize", UnTokenize()), 
+                        ("word2vec", Doc2Vec())])
 
 modelings_sentiment_analysis = [
-                                ("doc2vec", Doc2Vec(), param_doc2vec),
-                                ("word2vec", word2vec, param_word2vec),
+                                ("doc2vec", doc2vec_pipe, param_doc2vec),
+                                ("word2vec", GetSentenceEmbedding(), param_word2vec),
                                 ]

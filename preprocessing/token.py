@@ -11,7 +11,6 @@ class Tokenize(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        print(X[X.isna()])
         return X.str.split(' ') \
                .dropna() \
                .apply(lambda l: [w for w in l if w not in self.caracteres_a_quitar])
@@ -21,4 +20,4 @@ class UnTokenize(BaseEstimator, TransformerMixin):
         return self
 
     def transform(self, X):
-        return X.apply(lambda l: ' '.join(l))
+        return pd.Series(X).apply(lambda l: ' '.join(l))

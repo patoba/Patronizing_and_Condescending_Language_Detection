@@ -2,10 +2,11 @@ from time import time
 from copy import deepcopy
 
 import pandas as pd
-from sklearn.pipeline import Pipeline
+# from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, GridSearchCV
 
 from imblearn.over_sampling import SMOTE
+from imblearn.pipeline import Pipeline
 
 from preprocessing import UnTokenize, ApplyColumn, AnalisisSentimiento
 from .preprocessing import preprocessesors
@@ -15,15 +16,9 @@ from .training import classifiers
 from .selection import analyze_results
 from .selection import min_max
 
-def split_and_resample(X, y):
+def process_bag_of_words(X, y, n_jobs = -1):
     X_train, X_test, y_train, y_test = train_test_split(
                 X, y, random_state=42)
-    oversample = SMOTE()
-    X_train, y_train = oversample.fit_resample(X_train, y_train)
-    return X_train, X_test, y_train, y_test
-
-def process_bag_of_words(X, y, n_jobs = -1):
-    X_train, X_test, y_train, y_test = split_and_resample(X, y)
     tiempos = dict()
     results = dict()
     for name_preprocessor, preprocessor in preprocessesors:
@@ -32,25 +27,28 @@ def process_bag_of_words(X, y, n_jobs = -1):
                 for name_classifier, classifier, params_classifier in classifiers:
                     print(name_preprocessor, name_base, name_modeling, name_classifier)
                     tiempo_inicio = time()
-                    pipe = Pipeline([("preprocessor", preprocessor),
-                                     ("basser", basser),
-                                     ("modeling", modeling),
+                    pipe = Pipeline(preprocessor + 
+                                    [("basser", basser),
                                      ("untokenize", UnTokenize()),
+                                     ("modeling", modeling),
+                                     ("resampling", SMOTE()),
                                      ("classifier", classifier)])
                     grid = GridSearchCV(pipe, params_classifier, 
                                 scoring = "f1", 
-                                n_jobs = n_jobs)
+                                n_jobs = n_jobs,
+                                verbose = 2)
                     grid.fit(X_train, y_train) 
                     tiempo_total = time() - tiempo_inicio
                     tiempos[name_preprocessor, name_base, name_modeling, name_classifier] = tiempo_total
                     results[name_preprocessor, name_base, name_modeling, name_classifier] = deepcopy(grid)
-    df_models = analyze_results(results, X_train, y_train, X_test, y_test)
+    df_models = analyze_results(results, X_train, X_test, y_train, y_test)
     print(df_models)
     best_model = min_max(df_models)
     return results, tiempos, df_models, best_model
 
 def process_sentiment_analysis(X, y, n_jobs = -1):
-    X_train, X_test, y_train, y_test = split_and_resample(X, y)
+    X_train, X_test, y_train, y_test = train_test_split(
+                X, y, random_state=42)
     tiempos = dict()
     results = dict()
     for name_preprocessor, preprocessor in preprocessesors:
