@@ -55,7 +55,6 @@ def process_sentiment_analysis(X, y, n_jobs = -1):
 
         # 2 modelajes
         for name_modeling, modeling, params_modeling in modelings_sentiment_analysis:
-            break
             for name_classifier, classifier, params_classifier in classifiers:
                 print(name_preprocessor, name_modeling, None, name_classifier)
                 pipe = Pipeline(preprocessor + \
@@ -75,7 +74,6 @@ def process_sentiment_analysis(X, y, n_jobs = -1):
 
         # Analisis sentimiento individual
         for name_classifier, classifier, params_classifier in classifiers:
-            break
             print(name_preprocessor, None, "sentiment_analysis", name_classifier)
             pipe = Pipeline(preprocessor + \
                             [("untokenize", UnTokenize()),
