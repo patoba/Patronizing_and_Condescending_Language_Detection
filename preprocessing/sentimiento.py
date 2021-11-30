@@ -10,7 +10,9 @@ class AnalisisSentimiento(BaseEstimator, TransformerMixin):
          #check_is_fitted(self)
          sent_pol = X.apply(lambda line: TextBlob(line).sentiment.polarity)
          sent_sub = X.apply(lambda line: TextBlob(line).sentiment.subjectivity)
-         return pd.DataFrame([sent_pol,sent_sub]).T
+         df = pd.DataFrame([sent_pol,sent_sub]).T.reset_index(drop=True)
+         df.columns = [0, 1]
+         return df
     
     def fit(self, X, y=None):
         return self

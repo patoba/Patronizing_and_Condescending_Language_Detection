@@ -55,10 +55,13 @@ def process_sentiment_analysis(X, y, n_jobs = -1):
 
         # 2 modelajes
         for name_modeling, modeling, params_modeling in modelings_sentiment_analysis:
+            break
             for name_classifier, classifier, params_classifier in classifiers:
-                pipe = Pipeline([("preprocessor", preprocessor),
-                                 ("modeling", modeling),
-                                 ("classifier", classifier)])
+                print(name_preprocessor, name_modeling, None, name_classifier)
+                pipe = Pipeline(preprocessor + \
+                                modeling + \
+                                [("resampling", SMOTE()),
+                                ("classifier", classifier)])
                 param_grid = {**params_modeling, **params_classifier}
                 tiempo_inicio = time()
                 grid = GridSearchCV(pipe, param_grid, 
@@ -66,13 +69,18 @@ def process_sentiment_analysis(X, y, n_jobs = -1):
                                     n_jobs = n_jobs)
                 grid.fit(X_train, y_train) 
                 tiempo_total = time() - tiempo_inicio
+                print(grid.score(X_train, y_train), grid.score(X_test, y_test))
                 tiempos[name_preprocessor, name_modeling, None, name_classifier] = tiempo_total
                 results[name_preprocessor, name_modeling, None, name_classifier] = deepcopy(grid)
-        
+
         # Analisis sentimiento individual
         for name_classifier, classifier, params_classifier in classifiers:
-            pipe = Pipeline([("preprocessor", preprocessor),
-                             ("sentiment_analysis", AnalisisSentimiento())
+            break
+            print(name_preprocessor, None, "sentiment_analysis", name_classifier)
+            pipe = Pipeline(preprocessor + \
+                            [("untokenize", UnTokenize()),
+                             ("sentiment_analysis", AnalisisSentimiento()),
+                             ("resampling", SMOTE()),
                              ("classifier", classifier)])
             tiempo_inicio = time()
             grid = GridSearchCV(pipe, params_classifier, 
@@ -80,16 +88,20 @@ def process_sentiment_analysis(X, y, n_jobs = -1):
                                 n_jobs = n_jobs)
             grid.fit(X_train, y_train) 
             tiempo_total = time() - tiempo_inicio
+            print(grid.score(X_train, y_train), grid.score(X_test, y_test))
             tiempos[name_preprocessor, None, "sentiment_analysis", name_classifier] = tiempo_total
             results[name_preprocessor, None, "sentiment_analysis", name_classifier] = deepcopy(grid)
 
         # 2 modelajes y analisis sentimiento individual
         for name_modeling, modeling, params_modeling in modelings_sentiment_analysis:
             for name_classifier, classifier, params_classifier in classifiers:
-                pipe = Pipeline([("preprocessor", preprocessor),
-                                 ("copy", ApplyColumn()),
+                print(name_preprocessor, name_modeling, "sentiment_analysis", name_classifier)
+                pipe = Pipeline(preprocessor + \
+                                [("copy", ApplyColumn()),
                                  ("modeling", ApplyColumn(1, modeling)),
-                                 ("sentiment_analysis", ApplyColumn(0, AnalisisSentimiento())),
+                                 ("untokenize", ApplyColumn(0, UnTokenize())),
+                                 ("sentiment_analysis", ApplyColumn(-1, AnalisisSentimiento())),
+                                 ("resampling", SMOTE()),
                                  ("classifier", classifier)])
                 tiempo_inicio = time()
                 grid = GridSearchCV(pipe, params_classifier, 
@@ -97,6 +109,7 @@ def process_sentiment_analysis(X, y, n_jobs = -1):
                                     n_jobs = n_jobs)
                 grid.fit(X_train, y_train) 
                 tiempo_total = time() - tiempo_inicio
+                print(grid.score(X_train, y_train), grid.score(X_test, y_test))
                 tiempos[name_preprocessor, name_modeling, "sentiment_analysis", name_classifier] = tiempo_total
                 results[name_preprocessor, name_modeling, "sentiment_analysis", name_classifier] = deepcopy(grid)
         

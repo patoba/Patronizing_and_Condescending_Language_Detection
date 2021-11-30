@@ -19,19 +19,17 @@ modelings_bag_words = [
 inicio = "" + inicio
 
 param_word2vec = {
-    inicio + "word2vec__method": [np.mean, np.sum], 
+    "word2vec__method": [np.mean, np.sum], 
 }
 
-param_doc2vec = {
-    inicio + "vector_size": [5, 100, 300]
-}
+param_doc2vec = {}
 
 param_sentiment_analisis = {}
 
-doc2vec_pipe = Pipeline([("untokenize", UnTokenize()), 
-                        ("word2vec", Doc2Vec())])
+doc2vec_pipe = [("untokenize", UnTokenize()), 
+                ("doc2vec", Doc2Vec())]
 
 modelings_sentiment_analysis = [
                                 ("doc2vec", doc2vec_pipe, param_doc2vec),
-                                ("word2vec", GetSentenceEmbedding(), param_word2vec),
+                                #("word2vec", [GetSentenceEmbedding()], param_word2vec),
                                 ]

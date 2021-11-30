@@ -4,7 +4,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 
 param_grid_logistic_regression = {
-    "classifier__penalty": ['l1', 'l2', 'elasticnet', 'none']
+    "classifier__penalty": ['l2', 'none']
 }
 
 # https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.DistanceMetric.html

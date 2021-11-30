@@ -1,6 +1,7 @@
 import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import Pipeline
 
 class ToMatrix(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -19,13 +20,23 @@ class ApplyColumn(BaseEstimator, TransformerMixin):
         self.trans = trans
     
     def fit(self, X, y = None):
+        if type(self.trans) == list:
+            self.trans = Pipeline(self.trans)
         return self
 
     def transform(self, X):
+        if type(X) == pd.Series:
+            X = pd.DataFrame({0: X.values})
+        if self.col == -1:
+            self.col = len(X.columns) - 1
         X_ = X.copy()
-        X = X.loc[:, self.col]
+        
+        X = X.iloc[:, self.col]
         X_.drop(columns = self.col, inplace = True)
-        df = self.trans.fit_transform(X)
-        df = pd.concat([X_, df], axis=1)
+        df = pd.DataFrame(self.trans.fit_transform(X))
+        if len(X_.columns) > 0:
+            df = pd.concat([X_, df], axis=1)
         df.columns = list(range(len(df.columns)))
+        df.reset_index(drop = True)
+       
         return df

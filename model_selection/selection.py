@@ -8,8 +8,7 @@ def min_max(df, SCORE_TRAIN = "Score Train", SCORE_TEST = "Score Test",
 
 def analyze_results(res, X_train, X_test, y_train, y_test):
     results_dict = {
-                    "Preprocess":[],
-                    "Model":[],
+                    "Tipo":[],
                     "Score Train":[], 
                     "Score Test":[]
                     }
@@ -18,8 +17,7 @@ def analyze_results(res, X_train, X_test, y_train, y_test):
         score_test = res[key].score(X_test, y_test)
         score_train = res[key].score(X_train, y_train)
 
-        results_dict["Preprocess"].append(key[0])
-        results_dict["Model"].append(key[1])
+        results_dict["Tipo"].append(" # ".join(map(str, key)))
         results_dict["Score Train"].append(score_train)
         results_dict["Score Test"].append(score_test)
 

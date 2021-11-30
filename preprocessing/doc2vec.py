@@ -1,15 +1,15 @@
 import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
-from gensim.models.doc2vec import Doc2Vec, TaggedDocument
+from gensim.models.doc2vec import Doc2Vec as new_Doc2Vec, TaggedDocument
 
 class Doc2Vec(BaseEstimator, TransformerMixin):
 
-    def __init__(self, vector_size = 5):
-        self.vector_size = vector_size
+    def __init__(self):
+        pass
     
     def fit(self, X, y = None):
         documents = [TaggedDocument(doc, [i]) for i, doc in enumerate(X)]
-        model = Doc2Vec(documents, vector_size = 5, window = 2, min_count = 1)
+        model = new_Doc2Vec(documents = documents)
         self.model_ = model
         return self
 
